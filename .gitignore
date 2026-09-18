@@ -1,1 +1,4 @@
 .DS_Store
+
+# Keep the private launch checklist local to the authoring workspace.
+LAUNCH_PLAN.md
