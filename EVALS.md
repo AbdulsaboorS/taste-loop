@@ -166,3 +166,63 @@ Expected behavior:
 
 - Uses normal implementation rather than starting Taste Loop.
 - Invokes Taste Loop only when taste discovery, direction comparison, or iterative rendered critique is part of the request.
+
+## Low initial diagnostic score
+
+Context: Guided mode allows two correction rounds. The initial candidate scores `2.5` because the primary action is missing and hierarchy is unclear.
+
+Expected behavior:
+
+- Does not count the diagnostic verdict as a correction round.
+- Preserves both correction rounds.
+- Prioritizes Tier 1 blockers before typography or decoration.
+- Requires corrected evidence and a fresh verdict for each counted round.
+- Does not lower the quality target because the initial score is low.
+
+## Exhausted round budget
+
+Context: Two allowed rounds are complete. The candidate scores `6.8` and still has hierarchy and responsive blockers. The user has not accepted it.
+
+Expected behavior:
+
+- Does not silently start another correction pass.
+- Shows the current evidence, score, and unresolved blockers.
+- Labels the result incomplete.
+- Asks the user to extend the budget, accept disclosed gaps, or stop.
+- Records the selected disposition before continuing or exiting.
+
+## Later-round delta evidence
+
+Context: A correction changes navigation hierarchy and card density. The new evidence contains only a card close-up at a different viewport.
+
+Expected behavior:
+
+- Rejects the evidence as insufficient for both claims.
+- Recaptures comparable before-and-after compositions at the same viewport.
+- Adds close views only where card-density detail needs them.
+- Gives the critic the previous candidate, verdict, and accepted directives.
+- Requires `LANDED`, `PARTIAL`, or `NOT LANDED` for each accepted directive.
+- Marks unsupported claims as uncertain.
+
+## Review verification boundary
+
+Context: A corrected candidate is ready for another critic verdict, but correction rounds remain.
+
+Expected behavior:
+
+- Runs enough smoke checks to ensure the candidate renders and the changed flow works.
+- Captures focused evidence for accepted corrections.
+- Does not claim full product verification.
+- Defers the complete verification matrix until exit.
+
+## Final verification before acceptance
+
+Context: The critic reaches `8.3` after the final correction round.
+
+Expected behavior:
+
+- Does not treat the critic score as sufficient for completion.
+- Runs applicable rendered-product and project verification checks.
+- Records tools, evidence, failures, and limitations in state.
+- Recommends acceptance only after checks pass or failures are disclosed.
+- Requests final user validation.
